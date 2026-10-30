@@ -49,26 +49,6 @@ class _GamePageState extends ConsumerState<GamePage> {
     }
 
     final finished = rules?.isFinished(totals) ?? false;
-    String? winnerName;
-    String? looserName;
-    if (finished) {
-      final best = totals.entries.reduce(
-        (a, b) => rules!.lowerIsBetter
-            ? (a.value < b.value ? a : b)
-            : (a.value > b.value ? a : b),
-      );
-      winnerName = players.value
-          ?.firstWhere((player) => player.id == best.key)
-          .name;
-      final worst = totals.entries.reduce(
-        (a, b) => rules!.lowerIsBetter
-            ? (a.value > b.value ? a : b)
-            : (a.value < b.value ? a : b),
-      );
-      looserName = players.value
-          ?.firstWhere((player) => player.id == worst.key)
-          .name;
-    }
 
     return Container(
       decoration: const BoxDecoration(
@@ -87,14 +67,7 @@ class _GamePageState extends ConsumerState<GamePage> {
             switchOutCurve: Curves.easeInCubic,
             child: _inRound
                 ? _buildRoundInput(game, players, totals)
-                : _buildLeaderboard(
-                    players,
-                    finished,
-                    rules,
-                    looserName,
-                    winnerName,
-                    totals,
-                  ),
+                : _buildLeaderboard(players, finished, rules, totals),
           ),
         ),
       ),
@@ -159,8 +132,6 @@ class _GamePageState extends ConsumerState<GamePage> {
     AsyncValue<List<Player>> players,
     bool finished,
     GameRules? rules,
-    String? looserName,
-    String? winnerName,
     Map<int, int> totals,
   ) {
     return Column(
@@ -226,18 +197,9 @@ class _GamePageState extends ConsumerState<GamePage> {
               ),
             ),
           ),
-        ] else ...[
-          if (rules!.lowerIsBetter) ...[
-            (looserName!.toLowerCase().trim() == 'mémé' ||
-                    looserName.toLowerCase().trim() == 'salomé')
-                ? Text(playerNickname(looserName))
-                : Text('${playerNickname(looserName)} a gagné !'),
-          ] else ...[
-            (winnerName!.toLowerCase().trim() == 'mémé' ||
-                    winnerName.toLowerCase().trim() == 'salomé')
-                ? Text(playerNickname(winnerName))
-                : Text('${playerNickname(winnerName)} a gagné !'),
-          ],
+        ] else if (players.value case final list? when list.isNotEmpty) ...[
+          const Spacer(),
+          ResultDisplay(result: GameResult.from(list, totals, rules!)),
         ],
       ],
     );
