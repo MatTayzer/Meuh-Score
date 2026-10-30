@@ -15,6 +15,8 @@ abstract final class AppAssets {
   static const quiprendIcon = '$_icons/6.png';
   static const skyjoIcon = '$_icons/skyjo.png';
 
+  static const gasparAvatar = '$_images/player/gaspar.png';
+
   static const playerBoys = [
     '$_images/player/player_boy_1.png',
     '$_images/player/player_boy_1.png',

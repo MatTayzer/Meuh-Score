@@ -6,6 +6,10 @@ const _girlNames = {'pénélope', 'péné', 'salomé', 'mémé', 'daphnée', 'ma
 String playerAvatar(String name) {
   final cleanName = name.toLowerCase().trim();
 
+  if (cleanName == 'gaspar') {
+    return AppAssets.gasparAvatar;
+  }
+
   final images = _girlNames.contains(cleanName)
       ? AppAssets.playerGirls
       : AppAssets.playerBoys;
