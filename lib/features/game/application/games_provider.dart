@@ -17,7 +17,7 @@ class Games extends _$Games {
     return db.select(db.games).watch();
   }
 
-  /// Crée la partie et ses participants, puis renvoie l'id de la partie.
+  /// Crée la partie et renvoie le gameId
   Future<int> createGame(GameType type, List<int> playerIds) {
     return _db.transaction(() async {
       final gameId = await _db
@@ -34,7 +34,7 @@ class Games extends _$Games {
     });
   }
 
-  /// Marque la partie comme terminée.
+  /// Mets la partie en finished
   Future<void> endGame(int gameId) async {
     await (_db.update(_db.games)..where((g) => g.id.equals(gameId))).write(
       const GamesCompanion(ended: Value(true)),
@@ -42,12 +42,12 @@ class Games extends _$Games {
   }
 }
 
-/// La partie la plus récente, ou null s'il n'y en a aucune.
+/// La partie la plus récente, si aucune : null
 @riverpod
 Stream<Game?> lastGame(Ref ref) {
   final db = ref.watch(databaseProvider);
   return (db.select(db.games)
-        ..orderBy([(g) => OrderingTerm.desc(g.id)]) // la plus récente d'abord
+        ..orderBy([(g) => OrderingTerm.desc(g.id)])
         ..limit(1))
-      .watchSingleOrNull(); // null si la table est vide
+      .watchSingleOrNull();
 }

@@ -22,6 +22,9 @@ class SkyjoRules extends GameRules {
   bool get lowerIsBetter => true;
 
   @override
+  bool get highlightLoser => true;
+
+  @override
   bool isFinished(Map<int, int> totals) =>
       totals.values.any((total) => total >= maxScore);
 }

@@ -63,6 +63,7 @@ class _NumberTabState extends State<NumberTab> {
     );
   }
 
+  // Boutons pour le clavier
   Widget button(String text, VoidCallback onTap) {
     final symbol = text;
     return Expanded(

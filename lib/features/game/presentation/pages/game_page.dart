@@ -199,7 +199,10 @@ class _GamePageState extends ConsumerState<GamePage> {
           ),
         ] else if (players.value case final list? when list.isNotEmpty) ...[
           const Spacer(),
-          ResultDisplay(result: GameResult.from(list, totals, rules!)),
+          ResultDisplay(
+            result: GameResult.from(list, totals, rules!),
+            highlightLoser: rules.highlightLoser,
+          ),
         ],
       ],
     );

@@ -18,6 +18,7 @@ class Players extends _$Players {
     return db.select(db.players).watch();
   }
 
+  // Ajouter un joueur a la bdd
   Future<bool> add(String name) async {
     final clearName = name.trim();
     if (clearName.isEmpty) return false;
@@ -28,9 +29,7 @@ class Players extends _$Players {
     return true;
   }
 
-  /// Supprime le joueur avec ses scores et ses participations aux parties.
-  /// Le schéma interdit de supprimer un joueur référencé (onDelete: restrict) :
-  /// on retire donc d'abord ses lignes, dans une transaction (tout ou rien).
+  // Supprimer un joueur de la bdd
   Future<bool> remove(int id) async {
     try {
       await _db.transaction(() async {
@@ -49,6 +48,7 @@ class Players extends _$Players {
     }
   }
 
+  // Renommer un joueur dans la bdd
   Future<bool> rename(int id, String newName) async {
     final clearName = newName.trim();
     if (clearName.isEmpty) return false;
@@ -59,6 +59,7 @@ class Players extends _$Players {
     return true;
   }
 
+  // Vérifier si le nom est déjà pris
   Future<bool> _nameTaken(String name) async {
     final existing = await (_db.select(
       _db.players,
@@ -66,5 +67,3 @@ class Players extends _$Players {
     return existing != null;
   }
 }
-
-// Plus besoin de modifier state : le stream de build() se met à jour après chaque écriture en base.

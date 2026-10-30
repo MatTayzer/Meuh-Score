@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meuh_score/features/game/domain/rules/six_qui_prend_rules.dart';
 import 'package:meuh_score/features/game/domain/rules/skyjo_rules.dart';
 import 'package:meuh_score/features/game/presentation/widgets/result_display.dart';
 import 'package:meuh_score/features/players/domain/player.dart';
@@ -30,18 +32,48 @@ void main() {
     expect(lose.loserMessage, 'Le roi de la patience a perdu !');
   });
 
-  test('Salomé a sa phrase quand elle perd, pas quand elle gagne', () {
-    final lose = GameResult.from([salome, bob], {3: 100, 2: 10}, rules);
-    final win = GameResult.from([salome, bob], {3: 10, 2: 100}, rules);
+  test('Salomé et Mémé gardent leur nom quand elles perdent', () {
+    const meme = Player(id: 5, name: 'Mémé');
+    final salomeLoses = GameResult.from([salome, bob], {3: 100, 2: 10}, rules);
+    final memeLoses = GameResult.from([meme, bob], {5: 100, 2: 10}, rules);
 
-    expect(lose.loserMessage, 'Tout le monde a gagné, sauf Salomé !');
-    expect(win.winnerMessage, 'Salomé a gagné !');
+    expect(salomeLoses.loserMessage, 'Salomé a perdu !');
+    expect(memeLoses.loserMessage, 'Mémé a perdu !');
   });
 
   test('un joueur sans score compte pour 0 point', () {
     final result = GameResult.from([alice, bob], {2: 100}, rules);
 
     expect(result.winnerMessage, 'Alice a gagné !');
+  });
+
+  test('seul le 6 qui prend met le perdant en avant', () {
+    expect(const SixQuiPrendRules().highlightLoser, isTrue);
+    expect(rules.highlightLoser, isFalse);
+  });
+
+  testWidgets('le message mis en avant passe en premier et en grand', (
+    tester,
+  ) async {
+    final result = GameResult.from([alice, bob], {1: 10, 2: 100}, rules);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ResultDisplay(result: result, highlightLoser: true),
+        ),
+      ),
+    );
+
+    final theme = Theme.of(tester.element(find.byType(ResultDisplay)));
+    final loser = tester.widget<Text>(find.text('Bob a perdu !'));
+    final winner = tester.widget<Text>(find.text('Alice a gagné !'));
+    expect(loser.style, theme.textTheme.headlineSmall);
+    expect(winner.style, theme.textTheme.titleMedium);
+    expect(
+      tester.getTopLeft(find.text('Bob a perdu !')).dy,
+      lessThan(tester.getTopLeft(find.text('Alice a gagné !')).dy),
+    );
   });
 
   test('gère les égalités', () {

@@ -27,8 +27,8 @@ class _GamePlayersPageState extends ConsumerState<GamePlayersPage> {
   @override
   void initState() {
     super.initState();
+    // Cocher tout les joueurs
     ref.listenManual(playersProvider, (previous, next) {
-      // On ne coche qu'une fois : au premier chargement de la liste
       if (_selectedIds.isEmpty && next.value != null) {
         setState(() {
           _selectedIds.addAll(next.value!.map((player) => player.id));
@@ -144,6 +144,7 @@ class _GamePlayersPageState extends ConsumerState<GamePlayersPage> {
     );
   }
 
+  // Crée la partie dans la bdd et la lance
   Future<void> _startGame(GameType type, List<int> players) async {
     final gameId = await ref
         .read(gamesProvider.notifier)

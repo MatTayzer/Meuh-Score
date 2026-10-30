@@ -45,10 +45,10 @@ class _PlayersInGameState extends State<PlayersInGame> {
     super.dispose();
   }
 
+  // Scroll + focus sur le joueur
   void _scrollToCurrent() {
     if (!_scrollController.hasClients) return;
     final position = _scrollController.position;
-    // Position qui centre la carte du joueur à l'écran
     final target =
         _sidePadding +
         widget.currentIndex * (_cardWidth + _gap) -

@@ -2,6 +2,7 @@ import 'package:meuh_score/core/constants/app_assets.dart';
 
 const _girlNames = {'pénélope', 'péné', 'salomé', 'mémé', 'daphnée', 'maman'};
 
+// Choisi un avatar au hasard selon le sexe
 String playerAvatar(String name) {
   final cleanName = name.toLowerCase().trim();
 

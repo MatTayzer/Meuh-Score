@@ -40,6 +40,7 @@ class GameScore extends _$GameScore {
     });
   }
 
+  // Récupérer le nombre de la prochaine manche
   Future<int> _nextRoundNumber() async {
     final maxRound = _db.scores.roundNumber.max();
     final query = _db.selectOnly(_db.scores)
