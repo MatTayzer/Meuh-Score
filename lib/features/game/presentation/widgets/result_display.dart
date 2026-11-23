@@ -3,15 +3,7 @@ import 'package:meuh_score/features/game/domain/rules/game_rules.dart';
 import 'package:meuh_score/features/players/domain/player.dart';
 
 // Surnoms des joueurs
-const _nicknames = {
-  // Ajouter brice, victor, gaspar, nico
-  'pénélope': 'Mamie Couscous',
-  'péné': 'Mamie Couscous',
-  'gabriel': 'Papi pénoir',
-  'gaby': 'Papi pénoir',
-  'philippe': 'Le roi de la patience',
-  'papa': 'Le roi de la patience',
-};
+const _nicknames = <String, String>{};
 
 String _cleanName(String name) => name.toLowerCase().trim();
 

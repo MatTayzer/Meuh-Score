@@ -1,4 +1,4 @@
-# Créer la clé pour signer l'app sur le Play Store
+﻿# Créer la clé pour signer l'app sur le Play Store
 # Lancer depuis le dossier du projet : .\tool\create_keystore.ps1
 
 $ErrorActionPreference = 'Stop'

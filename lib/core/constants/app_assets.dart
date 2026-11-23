@@ -4,6 +4,8 @@ abstract final class AppAssets {
   static const _textures = '$_images/textures';
   static const _icons = '$_images/icons';
 
+  static const appIcon = 'assets/icon.png';
+
   static const imagesDir = _images;
 
   static const trophy = '$_icons/trophy.webp';

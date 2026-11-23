@@ -47,6 +47,10 @@ class HomePage extends ConsumerWidget {
           child: Column(
             children: [
               const Spacer(),
+              ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(12),
+                child: Image.asset(AppAssets.appIcon, width: 100),
+              ),
               const Text(
                 'MEUH',
                 style: TextStyle(color: AppColors.accent, fontSize: 45),

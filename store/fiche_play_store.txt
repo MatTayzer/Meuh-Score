@@ -1,0 +1,54 @@
+MEUH SCORE – FICHE PLAY STORE
+=============================
+
+Nom de l'application
+--------------------
+Meuh Score
+
+
+Brève description
+-----------------
+Le compteur de points de vos jeux de cartes.
+
+
+Description complète
+--------------------
+Meuh Score vous permet de compter vos points pendant vos parties de cartes, en famille ou entre amis. Fini le papier et le crayon !
+
+🃏 Jeux disponibles
+- 6 qui prend !
+- Skyjo
+
+✨ Fonctionnalités
+- Ajoutez vos joueurs une fois, retrouvez-les à chaque partie
+- Saisissez les points de chaque manche en quelques secondes
+- Suivez le classement en direct
+- La fin de partie est détectée automatiquement selon les règles du jeu
+- Reprenez une partie en cours là où vous l'aviez laissée
+- Retrouvez toutes vos parties terminées dans l'historique
+
+🔒 Simple et respectueuse
+- Fonctionne sans internet
+- Sans publicité
+- Sans compte
+- Aucune donnée collectée : tout reste sur votre téléphone
+
+Meuh Score est une application non officielle, non affiliée à Gigamic, Amigo ou Magilano. Les noms des jeux sont des marques de leurs propriétaires respectifs.
+
+
+Règles de confidentialité
+-------------------------
+https://mattayzer.github.io/Meuh-Score/privacy.html
+
+
+Sécurité des données
+--------------------
+Collecte de données : Non
+Partage de données : Non
+
+
+Images
+------
+icone_512.png          -> Icône de l'application (512 x 512)
+banniere_1024x500.png  -> Image de présentation (1024 x 500)
+captures/              -> Captures d'écran pour téléphone (1080 x 1920), dans l'ordre

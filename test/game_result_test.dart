@@ -24,14 +24,6 @@ void main() {
     expect(result.isDraw, isFalse);
   });
 
-  test('utilise les surnoms pour le gagnant comme pour le perdant', () {
-    final win = GameResult.from([philippe, bob], {4: 10, 2: 100}, rules);
-    final lose = GameResult.from([philippe, bob], {4: 100, 2: 10}, rules);
-
-    expect(win.winnerMessage, 'Le roi de la patience a gagné !');
-    expect(lose.loserMessage, 'Le roi de la patience a perdu !');
-  });
-
   test('Salomé et Mémé gardent leur nom quand elles perdent', () {
     const meme = Player(id: 5, name: 'Mémé');
     final salomeLoses = GameResult.from([salome, bob], {3: 100, 2: 10}, rules);
