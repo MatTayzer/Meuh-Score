@@ -33,7 +33,7 @@ final class PlayersProvider
   Players create() => Players();
 }
 
-String _$playersHash() => r'615fed359bd6a742861016d34cdf2f9063bf257e';
+String _$playersHash() => r'8a89dc3770cc1e17f3a3a5717213bed59c1c480b';
 
 abstract class _$Players extends $StreamNotifier<List<Player>> {
   Stream<List<Player>> build();

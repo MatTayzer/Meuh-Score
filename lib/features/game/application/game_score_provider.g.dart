@@ -50,7 +50,7 @@ final class GameScoreProvider
   }
 }
 
-String _$gameScoreHash() => r'3ca8e5e68669ea3e2cb74317bde5202e8f92be2d';
+String _$gameScoreHash() => r'3a01137e6ce30f8761ee680ef97e3b1548199cac';
 
 final class GameScoreFamily extends $Family
     with

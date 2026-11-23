@@ -1,4 +1,4 @@
-/// Espacements autorisés (multiples de 4). Pas de valeurs libres dans les widgets.
+// Les espacements de l'app
 abstract final class AppSpacing {
   static const xs = 4.0;
   static const sm = 8.0;

@@ -21,7 +21,8 @@ class _PlayerState extends ConsumerState<PlayersPage> {
       builder: (context) => AlertDialog(
         title: Text('Supprimer ${player.name} ?'),
         content: const Text(
-          'Ses scores seront aussi effacés de toutes les parties.',
+          'Ses parties restent visibles dans l\'historique. '
+          'Si tu recrées un joueur avec le même nom, il sera restauré.',
         ),
         actions: [
           TextButton(

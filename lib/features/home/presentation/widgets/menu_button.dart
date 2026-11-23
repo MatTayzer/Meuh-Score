@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meuh_score/app/theme/app_theme.dart';
 import 'package:meuh_score/core/constants/app_assets.dart';
 
-/// Gros bouton rouge du menu d'accueil, avec effet de clic.
+// Gros bouton du menu
 class MenuButton extends StatelessWidget {
   const MenuButton({
     super.key,
@@ -19,8 +19,6 @@ class MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(15);
 
-    // L'ombre est dessinée hors du Material : le Material découpe tout ce que
-    // l'Ink peint au-delà de ses bords, donc une ombre dans l'Ink serait coupée.
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,

@@ -4,8 +4,8 @@ import 'package:meuh_score/features/game/domain/game_type.dart';
 import 'package:meuh_score/features/game/presentation/pages/game_page.dart';
 import 'package:meuh_score/features/game/presentation/pages/game_players_page.dart';
 import 'package:meuh_score/features/game/presentation/pages/new_game_page.dart';
+import 'package:meuh_score/features/history/presentation/pages/history_page.dart';
 import 'package:meuh_score/features/home/presentation/pages/home_page.dart';
-import 'package:meuh_score/features/leaderboard/presentation/pages/leaderboard_page.dart';
 import 'package:meuh_score/features/players/presentation/pages/new_player_page.dart';
 import 'package:meuh_score/features/players/presentation/pages/players_page.dart';
 
@@ -51,9 +51,9 @@ final GoRouter appRouter = GoRouter(
           },
         ),
         GoRoute(
-          path: 'leaderboard',
+          path: 'history',
           pageBuilder: (context, state) =>
-              slideFadePage(state, const LeaderboardPage()),
+              slideFadePage(state, const HistoryPage()),
         ),
       ],
     ),

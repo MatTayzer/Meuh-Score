@@ -30,6 +30,8 @@ class GamePage extends ConsumerStatefulWidget {
 class _GamePageState extends ConsumerState<GamePage> {
   int _turn = 0;
   bool _inRound = false;
+  bool _saving = false;
+  bool _repairing = false;
   final Map<int, int> _roundPoints = {};
 
   @override
@@ -49,6 +51,13 @@ class _GamePageState extends ConsumerState<GamePage> {
     }
 
     final finished = rules?.isFinished(totals) ?? false;
+
+    if (finished && game.value?.ended == false && !_repairing) {
+      _repairing = true;
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ref.read(gamesProvider.notifier).endGame(widget.gameId),
+      );
+    }
 
     return Container(
       decoration: const BoxDecoration(
@@ -74,6 +83,7 @@ class _GamePageState extends ConsumerState<GamePage> {
     );
   }
 
+  // Écran de saisie des points
   Widget _buildRoundInput(
     AsyncValue<Game> game,
     AsyncValue<List<Player>> players,
@@ -122,12 +132,13 @@ class _GamePageState extends ConsumerState<GamePage> {
             list[_turn].name,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          NumberTab(onSubmit: (d) => _onSubmit(list, totals, d)),
+          NumberTab(onSubmit: (d) => _onSubmit(list, d)),
         ],
       ],
     );
   }
 
+  // Écran des scores
   Widget _buildLeaderboard(
     AsyncValue<List<Player>> players,
     bool finished,
@@ -208,42 +219,36 @@ class _GamePageState extends ConsumerState<GamePage> {
     );
   }
 
+  // Changer de joueur
   void _switchPlayer(int index) {
     unawaited(HapticService.play(HapticPreset.mediumImpact));
     setState(() => _turn = index);
   }
 
-  Future<void> _onSubmit(
-    List<Player> players,
-    Map<int, int> totals,
-    int points,
-  ) async {
+  // Valider les points du joueur
+  Future<void> _onSubmit(List<Player> players, int points) async {
+    if (_saving) return;
+
     _roundPoints[players[_turn].id] = points;
 
-    // Si il y a un joueur suivant arrêter
     final nextPlayer = players.indexWhere(
       (element) => !_roundPoints.containsKey(element.id),
     );
-    debugPrint('$nextPlayer');
     if (nextPlayer != -1) {
       setState(() => _turn = nextPlayer);
       return;
     }
 
-    debugPrint('Plus aucun joueurs');
-    // Sinon valider et ajouter la manche à la bdd
-    await ref
-        .read(gameScoreProvider(widget.gameId).notifier)
-        .addRound(Map.of(_roundPoints));
-
-    // totals = les totaux AVANT cette manche → on ajoute les points de la manche
-    final newTotals = {...totals};
-    _roundPoints.forEach(
-      (id, points) => newTotals[id] = (newTotals[id] ?? 0) + points,
-    );
     final game = ref.read(gameProvider(widget.gameId)).value;
-    if (game != null && rulesFor(game.type).isFinished(newTotals)) {
-      await ref.read(gamesProvider.notifier).endGame(widget.gameId);
+    if (game == null) return;
+
+    _saving = true;
+    try {
+      await ref
+          .read(gameScoreProvider(widget.gameId).notifier)
+          .addRound(Map.of(_roundPoints), rulesFor(game.type));
+    } finally {
+      _saving = false;
     }
 
     if (!mounted) return; // Vérifier que l'app est ouverte

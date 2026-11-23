@@ -5,6 +5,7 @@ import 'package:meuh_score/app/router/app_routes.dart';
 import 'package:meuh_score/app/theme/app_theme.dart';
 import 'package:meuh_score/core/constants/app_assets.dart';
 import 'package:meuh_score/features/game/application/games_provider.dart';
+import 'package:meuh_score/features/history/application/history_provider.dart';
 import 'package:meuh_score/features/home/presentation/widgets/menu_button.dart';
 import 'package:meuh_score/features/home/presentation/widgets/menu_tile.dart';
 import 'package:meuh_score/features/players/application/players_provider.dart';
@@ -14,25 +15,21 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // null tant que la base n'a pas répondu : la tuile s'affiche sans sous-titre
     final playersCount = ref.watch(playersProvider).value?.length;
-    final gamesCount = ref.watch(gamesProvider).value?.length;
+    final gamesCount = ref.watch(gameHistoryProvider).value?.length;
 
-    // Bouton « Reprendre » seulement si la dernière partie n'est pas terminée
     final lastGame = ref.watch(lastGameProvider).value;
     final canResume = lastGame != null && !lastGame.ended;
 
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.background, // couleur de secours pendant le chargement
+        color: AppColors.background,
         image: DecorationImage(
           image: AssetImage(AppAssets.textureBackground),
           repeat: ImageRepeat.repeat,
         ),
       ),
       child: Scaffold(
-        // Le Scaffold anime tout seul l'apparition / disparition du FAB
-        // quand il passe de null à un bouton (et inversement).
         floatingActionButton: canResume
             ? FloatingActionButton.extended(
                 backgroundColor: AppColors.accent,
@@ -86,12 +83,12 @@ class HomePage extends ConsumerWidget {
                           const SizedBox(width: 12),
                           Expanded(
                             child: MenuTile(
-                              icon: Icons.emoji_events_outlined,
-                              label: 'Classement',
+                              icon: Icons.history,
+                              label: 'Historique',
                               subtitle: gamesCount == null
                                   ? null
-                                  : '$gamesCount parties',
-                              onTap: () => context.go(AppRoutes.leaderboard),
+                                  : '$gamesCount partie${gamesCount > 1 ? 's' : ''}',
+                              onTap: () => context.go(AppRoutes.history),
                             ),
                           ),
                         ],

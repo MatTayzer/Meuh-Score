@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meuh_score/app/router/app_routes.dart';
-import 'package:meuh_score/core/constants/app_assets.dart';
 import 'package:meuh_score/features/game/domain/game_type.dart';
 import 'package:meuh_score/features/game/domain/rules/rules_for.dart';
+import 'package:meuh_score/features/game/presentation/widgets/game_type_icon.dart';
 import 'package:meuh_score/shared/widgets/page_header.dart';
 
 class NewGamePage extends ConsumerStatefulWidget {
@@ -37,19 +37,17 @@ class _NewGamePageState extends ConsumerState<NewGamePage> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: (rulesFor(type).name == '6 qui prend !')
-                              ? Colors.red
-                              : Colors.blue,
+                          color: switch (type) {
+                            GameType.sixQuiPrend => Colors.red,
+                            GameType.skyjo => Colors.blue,
+                          },
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  rulesFor(type).name
-                                          .toLowerCase()
-                                          .toString() ==
-                                      'skyjo'
-                                  ? Colors.blue.shade200
-                                  : Colors.red.shade200,
+                              color: switch (type) {
+                                GameType.sixQuiPrend => Colors.red.shade200,
+                                GameType.skyjo => Colors.blue.shade200,
+                              },
                               offset: const Offset(3, 3),
                             ),
                           ],
@@ -57,13 +55,8 @@ class _NewGamePageState extends ConsumerState<NewGamePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            rulesFor(type).name.toLowerCase().toString() ==
-                                    'skyjo'
-                                ? Image.asset(AppAssets.skyjoIcon, width: 110)
-                                : Image.asset(
-                                    AppAssets.quiprendIcon,
-                                    width: 80,
-                                  ),
+                            GameTypeIcon(type: type),
+                            const SizedBox(height: 4),
                             Text(
                               rulesFor(type).name,
                               style: Theme.of(context).textTheme.labelLarge,

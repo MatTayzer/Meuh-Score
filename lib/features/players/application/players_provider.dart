@@ -15,32 +15,33 @@ class Players extends _$Players {
   @override
   Stream<List<Player>> build() {
     final db = ref.watch(databaseProvider);
-    return db.select(db.players).watch();
+    return (db.select(
+      db.players,
+    )..where((p) => p.archived.equals(false))).watch();
   }
 
   // Ajouter un joueur a la bdd
   Future<bool> add(String name) async {
     final clearName = name.trim();
     if (clearName.isEmpty) return false;
-    if (await _nameTaken(clearName)) return false;
+
+    final existing = await _byName(clearName);
+    if (existing != null) {
+      if (!existing.archived) return false;
+      await _setArchived(existing.id, archived: false);
+      return true;
+    }
+
     await _db
         .into(_db.players)
         .insert(PlayersCompanion.insert(name: clearName));
     return true;
   }
 
-  // Supprimer un joueur de la bdd
+  // Supprimer un joueur : il est archivé pour garder l'historique
   Future<bool> remove(int id) async {
     try {
-      await _db.transaction(() async {
-        await (_db.delete(
-          _db.scores,
-        )..where((s) => s.playerId.equals(id))).go();
-        await (_db.delete(
-          _db.gamePlayers,
-        )..where((g) => g.playerId.equals(id))).go();
-        await (_db.delete(_db.players)..where((p) => p.id.equals(id))).go();
-      });
+      await _setArchived(id, archived: true);
       return true;
     } catch (error) {
       debugPrint('Suppression du joueur $id impossible : $error');
@@ -52,18 +53,24 @@ class Players extends _$Players {
   Future<bool> rename(int id, String newName) async {
     final clearName = newName.trim();
     if (clearName.isEmpty) return false;
-    if (await _nameTaken(clearName)) return false;
+    if (await _byName(clearName) != null) return false;
     await (_db.update(_db.players)..where((p) => p.id.equals(id))).write(
       PlayersCompanion(name: Value(clearName)),
     );
     return true;
   }
 
-  // Vérifier si le nom est déjà pris
-  Future<bool> _nameTaken(String name) async {
-    final existing = await (_db.select(
+  // Joueur avec le nom archivé ou non
+  Future<Player?> _byName(String name) {
+    return (_db.select(
       _db.players,
     )..where((p) => p.name.equals(name))).getSingleOrNull();
-    return existing != null;
+  }
+
+  // Archiver ou désarchiver un joueur
+  Future<void> _setArchived(int id, {required bool archived}) {
+    return (_db.update(_db.players)..where((p) => p.id.equals(id))).write(
+      PlayersCompanion(archived: Value(archived)),
+    );
   }
 }

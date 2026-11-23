@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meuh_score/app/theme/app_theme.dart';
 
-/// Tuile secondaire du menu d'accueil : icône, titre et petite info en dessous.
+// Petit bouton du menu
 class MenuTile extends StatelessWidget {
   const MenuTile({
     super.key,
@@ -21,7 +21,6 @@ class MenuTile extends StatelessWidget {
     final radius = BorderRadius.circular(14);
     final textTheme = Theme.of(context).textTheme;
 
-    // Ombre hors du Material, sinon elle est découpée (voir MenuButton)
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: radius,

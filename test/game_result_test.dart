@@ -47,9 +47,9 @@ void main() {
     expect(result.winnerMessage, 'Alice a gagné !');
   });
 
-  test('seul le 6 qui prend met le perdant en avant', () {
+  test('le 6 qui prend et le Skyjo mettent le perdant en avant', () {
     expect(const SixQuiPrendRules().highlightLoser, isTrue);
-    expect(rules.highlightLoser, isFalse);
+    expect(rules.highlightLoser, isTrue);
   });
 
   testWidgets('le message mis en avant passe en premier et en grand', (

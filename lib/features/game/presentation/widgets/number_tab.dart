@@ -117,7 +117,7 @@ class _NumberTabState extends State<NumberTab> {
     );
   }
 
-  /// Vibration courte, sans attendre la fin : la touche réagit immédiatement.
+  // Faire vibrer le téléphone
   void _haptic() => unawaited(HapticService.play(HapticPreset.mediumImpact));
 
   void _addDigit(String digit) {

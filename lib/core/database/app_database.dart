@@ -16,6 +16,7 @@ part 'app_database.g.dart';
 class Players extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(min: 1, max: 60).unique()();
+  BoolColumn get archived => boolean().withDefault(const Constant(false))();
 }
 
 @UseRowClass(Game)
@@ -55,14 +56,20 @@ class Scores extends Table {
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(driftDatabase(name: 'meuh_score'));
 
-  /// Pour les tests : base en mémoire, séparée de celle de l'app.
+  // Base pour les tests
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.addColumn(players, players.archived);
+      }
+    },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },

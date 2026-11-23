@@ -1,4 +1,4 @@
-/// Chemins des assets. Aucun chemin `assets/...` ailleurs dans le code.
+// Chemins des images
 abstract final class AppAssets {
   static const _images = 'assets/images';
   static const _textures = '$_images/textures';
@@ -11,9 +11,6 @@ abstract final class AppAssets {
   static const textureBackground = '$_textures/background.webp';
   static const textureMetal = '$_textures/ferraille.webp';
   static const textureButtonOverlay = '$_textures/overlay_button.webp';
-
-  static const quiprendIcon = '$_icons/6.png';
-  static const skyjoIcon = '$_icons/skyjo.png';
 
   static const gasparAvatar = '$_images/player/gaspar.png';
 

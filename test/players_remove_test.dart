@@ -15,7 +15,6 @@ void main() {
     container = ProviderContainer(
       overrides: [databaseProvider.overrideWithValue(db)],
     );
-    // Garde les providers actifs pendant le test
     container.listen(playersProvider, (_, _) {});
     container.listen(gamesProvider, (_, _) {});
   });
@@ -25,7 +24,7 @@ void main() {
     await db.close();
   });
 
-  test('supprime un joueur qui a déjà joué, sans toucher aux autres', () async {
+  test('supprimer un joueur le cache sans toucher à ses parties', () async {
     final players = container.read(playersProvider.notifier);
     await players.add('Alice');
     await players.add('Bob');
@@ -52,11 +51,22 @@ void main() {
 
     expect(await players.remove(alice.id), isTrue);
 
-    final remaining = await db.select(db.players).get();
-    expect(remaining.map((p) => p.name), ['Bob']);
+    final visible = await (db.select(
+      db.players,
+    )..where((p) => p.archived.equals(false))).get();
+    expect(visible.map((p) => p.name), ['Bob']);
+
     final scores = await db.select(db.scores).get();
-    expect(scores.map((s) => s.playerId), [bob.id]);
+    expect(scores.map((s) => s.playerId), unorderedEquals([alice.id, bob.id]));
     final participants = await db.select(db.gamePlayers).get();
-    expect(participants.map((g) => g.playerId), [bob.id]);
+    expect(
+      participants.map((g) => g.playerId),
+      unorderedEquals([alice.id, bob.id]),
+    );
+
+    expect(await players.add('Alice'), isTrue);
+    final all2 = await db.select(db.players).get();
+    expect(all2, hasLength(2));
+    expect(all2.firstWhere((p) => p.id == alice.id).archived, isFalse);
   });
 }

@@ -35,8 +35,23 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
   );
+  static const VerificationMeta _archivedMeta = const VerificationMeta(
+    'archived',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  late final GeneratedColumn<bool> archived = GeneratedColumn<bool>(
+    'archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("archived" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, archived];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -60,6 +75,12 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('archived')) {
+      context.handle(
+        _archivedMeta,
+        archived.isAcceptableOrUnknown(data['archived']!, _archivedMeta),
+      );
+    }
     return context;
   }
 
@@ -77,6 +98,10 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      archived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}archived'],
+      )!,
     );
   }
 
@@ -89,26 +114,39 @@ class $PlayersTable extends Players with TableInfo<$PlayersTable, Player> {
 class PlayersCompanion extends UpdateCompanion<Player> {
   final Value<int> id;
   final Value<String> name;
+  final Value<bool> archived;
   const PlayersCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.archived = const Value.absent(),
   });
   PlayersCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.archived = const Value.absent(),
   }) : name = Value(name);
   static Insertable<Player> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<bool>? archived,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (archived != null) 'archived': archived,
     });
   }
 
-  PlayersCompanion copyWith({Value<int>? id, Value<String>? name}) {
-    return PlayersCompanion(id: id ?? this.id, name: name ?? this.name);
+  PlayersCompanion copyWith({
+    Value<int>? id,
+    Value<String>? name,
+    Value<bool>? archived,
+  }) {
+    return PlayersCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      archived: archived ?? this.archived,
+    );
   }
 
   @override
@@ -120,6 +158,9 @@ class PlayersCompanion extends UpdateCompanion<Player> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (archived.present) {
+      map['archived'] = Variable<bool>(archived.value);
+    }
     return map;
   }
 
@@ -127,7 +168,8 @@ class PlayersCompanion extends UpdateCompanion<Player> {
   String toString() {
     return (StringBuffer('PlayersCompanion(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('archived: $archived')
           ..write(')'))
         .toString();
   }
@@ -841,10 +883,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$PlayersTableCreateCompanionBuilder = PlayersCompanion Function({
   Value<int> id,
   required String name,
+  Value<bool> archived,
 });
 typedef $$PlayersTableUpdateCompanionBuilder = PlayersCompanion Function({
   Value<int> id,
   Value<String> name,
+  Value<bool> archived,
 });
 
 final class $$PlayersTableReferences
@@ -905,6 +949,11 @@ class $$PlayersTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get archived => $composableBuilder(
+    column: $table.archived,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -977,6 +1026,11 @@ class $$PlayersTableOrderingComposer
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get archived => $composableBuilder(
+    column: $table.archived,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PlayersTableAnnotationComposer
@@ -993,6 +1047,9 @@ class $$PlayersTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<bool> get archived =>
+      $composableBuilder(column: $table.archived, builder: (column) => column);
 
   Expression<T> gamePlayersRefs<T extends Object>(
     Expression<T> Function($$GamePlayersTableAnnotationComposer a) f,
@@ -1074,11 +1131,13 @@ class $$PlayersTableTableManager
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
-          }) => PlayersCompanion(id: id, name: name),
+            Value<bool> archived = const Value.absent(),
+          }) => PlayersCompanion(id: id, name: name, archived: archived),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String name,
-          }) => PlayersCompanion.insert(id: id, name: name),
+            Value<bool> archived = const Value.absent(),
+          }) => PlayersCompanion.insert(id: id, name: name, archived: archived),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
@@ -1099,10 +1158,11 @@ class $$PlayersTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (gamePlayersRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Player,
                           $PlayersTable,
-                          GamePlayer
+                          GamePlayer,
+                          $GamePlayersTable
                         >(
                           currentTable: table,
                           referencedTable: $$PlayersTableReferences
@@ -1113,14 +1173,17 @@ class $$PlayersTableTableManager
                                 table,
                                 p0,
                               ).gamePlayersRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                       if (scoresRefs)
-                        await $_getPrefetchedData<Player, $PlayersTable, Score>(
+                        await $_getPrefetchedDataByColumns<
+                          Player,
+                          $PlayersTable,
+                          Score,
+                          $ScoresTable
+                        >(
                           currentTable: table,
                           referencedTable: $$PlayersTableReferences
                               ._scoresRefsTable(db),
@@ -1130,10 +1193,8 @@ class $$PlayersTableTableManager
                                 table,
                                 p0,
                               ).scoresRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'player_id',
                           typedResults: items,
                         ),
                     ];
@@ -1459,10 +1520,11 @@ class $$GamesTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (gamePlayersRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Game,
                           $GamesTable,
-                          GamePlayer
+                          GamePlayer,
+                          $GamePlayersTable
                         >(
                           currentTable: table,
                           referencedTable: $$GamesTableReferences
@@ -1473,23 +1535,24 @@ class $$GamesTableTableManager
                                 table,
                                 p0,
                               ).gamePlayersRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                       if (scoresRefs)
-                        await $_getPrefetchedData<Game, $GamesTable, Score>(
+                        await $_getPrefetchedDataByColumns<
+                          Game,
+                          $GamesTable,
+                          Score,
+                          $ScoresTable
+                        >(
                           currentTable: table,
                           referencedTable: $$GamesTableReferences
                               ._scoresRefsTable(db),
                           managerFromTypedResult: (p0) =>
                               $$GamesTableReferences(db, table, p0).scoresRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.gameId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'game_id',
                           typedResults: items,
                         ),
                     ];

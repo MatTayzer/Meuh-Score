@@ -52,17 +52,17 @@ abstract class _$Games extends $StreamNotifier<List<Game>> {
   }
 }
 
-/// La partie la plus récente, ou null s'il n'y en a aucune.
+/// La partie la plus récente, si aucune : null
 
 @ProviderFor(lastGame)
 final lastGameProvider = LastGameProvider._();
 
-/// La partie la plus récente, ou null s'il n'y en a aucune.
+/// La partie la plus récente, si aucune : null
 
 final class LastGameProvider
     extends $FunctionalProvider<AsyncValue<Game?>, Game?, Stream<Game?>>
     with $FutureModifier<Game?>, $StreamProvider<Game?> {
-  /// La partie la plus récente, ou null s'il n'y en a aucune.
+  /// La partie la plus récente, si aucune : null
   LastGameProvider._()
     : super(
         from: null,

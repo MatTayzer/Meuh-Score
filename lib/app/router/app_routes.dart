@@ -7,5 +7,5 @@ abstract final class AppRoutes {
   static const newGame = '/newGame';
   static String gamePlayers(GameType type) => '/newGame/${type.name}';
   static String game(int id) => '/game/$id';
-  static const leaderboard = '/leaderboard';
+  static const history = '/history';
 }
